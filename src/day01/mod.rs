@@ -8,9 +8,9 @@ pub fn part1() {
     let mut rows_a = Vec::<i32>::new();
     let mut rows_b = Vec::<i32>::new();
     for row_str in row_strs {
-        let mut split = row_str.trim().split_whitespace();
-        rows_a.push(split.next().unwrap().parse::<i32>().unwrap());
-        rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
+        let mut split = row_str.trim().split_whitespace().map(|v| v.parse::<i32>().unwrap());
+        rows_a.push(split.next().unwrap());
+        rows_b.push(split.next().unwrap());
     }
 
     rows_a.sort();
@@ -44,13 +44,7 @@ pub fn part2() {
         b_counts.insert(*b, curr + 1);
     }
 
-    let mut total_score = 0;
-    for a in rows_a {
-        let score = a * b_counts.get(&a).unwrap_or(&0);
-        total_score += score;
-    }
-
-    let output = total_score;
+    let output = rows_a.iter().fold(0, |acc, next| acc + (next * b_counts.get(&next).unwrap_or(&0)));
 
     dbg!(output);
 }
