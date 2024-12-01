@@ -36,9 +36,12 @@ pub fn part2() {
     let mut rows_a = Vec::<i32>::new();
     let mut rows_b = Vec::<i32>::new();
     for row_str in row_strs {
-        let mut split = row_str.trim().split_whitespace();
-        rows_a.push(split.next().unwrap().parse::<i32>().unwrap());
-        rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
+        let mut split = row_str
+            .trim()
+            .split_whitespace()
+            .map(|v| v.parse::<i32>().unwrap());
+        rows_a.push(split.next().unwrap());
+        rows_b.push(split.next().unwrap());
     }
 
     let mut b_counts = fxhash::FxHashMap::<i32, i32>::default();
