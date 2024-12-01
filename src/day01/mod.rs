@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+extern crate fxhash;
 
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
@@ -38,7 +38,7 @@ pub fn part2() {
         rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
     }
 
-    let mut b_counts = HashMap::<i32, i32>::new();
+    let mut b_counts = fxhash::FxHashMap::<i32, i32>::default();
     for b in rows_b.iter() {
         let curr = b_counts.get(&b).unwrap_or(&0);
         b_counts.insert(*b, curr + 1);
