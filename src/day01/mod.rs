@@ -1,43 +1,51 @@
-struct CubeCounts {
-    red: i32, green: i32, blue: i32,
-}
-
-const TOTALS: CubeCounts = CubeCounts { blue: 14, green: 13, red: 12 };
-
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
 
-    let output = input_str
-        .split("\n").filter_map(| line: &str | {
-            let (game_str, sets_str) = {
-                let mut line_split = line.split(": ");
-                (line_split.next().unwrap(), line_split.next().unwrap())
-            };
-            
-            let game_id = game_str.split(" ").last().unwrap().parse::<i32>().unwrap();
-            let is_game_valid = sets_str.split("; ").all(|set_str| {
-                let mut cubes = CubeCounts { blue: 0, red: 0, green: 0};
-                for cube_count_str in set_str.split(", ") {
-                    let (amount, color) = {
-                        let mut split = cube_count_str.split(" ");
-                        (split.next().unwrap().parse::<i32>().unwrap(), split.next().unwrap())
-                    };
-                    match color {
-                        "red" => cubes.red += amount,
-                        "green" => cubes.green += amount,
-                        "blue" => cubes.blue += amount,
-                        _ => panic!(),
-                    };
-                }
-                let is_set_valid =
-                    cubes.blue <= TOTALS.blue &&
-                    cubes.green <= TOTALS.green &&
-                    cubes.red <= TOTALS.red;
-                return is_set_valid;
-            });
+    let row_strs = input_str.lines();
 
-            if is_game_valid {Some(game_id)} else {None}
-        }).sum::<i32>();
+    let mut rows_a = Vec::<i32>::new();
+    let mut rows_b = Vec::<i32>::new();
+    for row_str in row_strs {
+        let mut split = row_str.trim().split_whitespace();
+        rows_a.push(split.next().unwrap().parse::<i32>().unwrap());
+        rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
+    }
+
+    rows_a.sort();
+    rows_b.sort();
+
+    let output = rows_a
+        .iter()
+        .enumerate()
+        .map(|(i, a)| (a - rows_b[i]).abs())
+        .sum::<i32>();
 
     dbg!(output);
 }
+
+pub fn part2() {
+    let input_str = include_str!("./real_input.txt");
+
+    let row_strs = input_str.lines();
+
+    let mut rows_a = Vec::<i32>::new();
+    let mut rows_b = Vec::<i32>::new();
+    for row_str in row_strs {
+        let mut split = row_str.trim().split_whitespace();
+        rows_a.push(split.next().unwrap().parse::<i32>().unwrap());
+        rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
+    }
+
+    let mut total_score = 0;
+    for a in rows_a {
+        let times_in_b = rows_b.iter().filter(|&&b| b == a).count();
+        let score = a * (times_in_b as i32);
+        total_score += score;
+    }
+
+
+    let output =total_score;
+
+    dbg!(output);
+}
+
