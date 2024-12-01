@@ -43,9 +43,7 @@ pub fn part2() {
         total_score += score;
     }
 
-
-    let output =total_score;
+    let output = total_score;
 
     dbg!(output);
 }
-
