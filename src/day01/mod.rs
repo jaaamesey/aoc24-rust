@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
 
@@ -36,10 +38,15 @@ pub fn part2() {
         rows_b.push(split.next().unwrap().parse::<i32>().unwrap());
     }
 
+    let mut b_counts = HashMap::<i32, i32>::new();
+    for b in rows_b.iter() {
+        let curr = b_counts.get(&b).unwrap_or(&0);
+        b_counts.insert(*b, curr + 1);
+    }
+
     let mut total_score = 0;
     for a in rows_a {
-        let times_in_b = rows_b.iter().filter(|&&b| b == a).count();
-        let score = a * (times_in_b as i32);
+        let score = a * b_counts.get(&a).unwrap_or(&0);
         total_score += score;
     }
 
