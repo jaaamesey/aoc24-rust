@@ -1,4 +1,4 @@
-extern crate fxhash;
+extern crate hashbrown;
 
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
@@ -44,9 +44,9 @@ pub fn part2() {
         rows_b.push(split.next().unwrap());
     }
 
-    let mut b_counts = fxhash::FxHashMap::<i32, i32>::default();
+    let mut b_counts = hashbrown::HashMap::<i32, i32>::default();
     for b in rows_b.iter() {
-        let curr = b_counts.get(&b).unwrap_or(&0);
+        let curr = b_counts.get(b).unwrap_or(&0);
         b_counts.insert(*b, curr + 1);
     }
 
