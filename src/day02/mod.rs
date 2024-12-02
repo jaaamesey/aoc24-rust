@@ -57,9 +57,9 @@ pub fn part2() {
         .collect::<Vec<_>>();
 
     let mut num_safe_reports = 0;
-    for report in reports {
+    for report in reports.iter() {
         let mut report_direction: i8 = 0;
-        let mut variants_to_retry: Vec<Vec<i32>> = Vec::new();
+        let mut is_main_report_safe = true;
         for (i, item) in report.iter().enumerate() {
             if i == 0 {
                 continue;
@@ -74,51 +74,48 @@ pub fn part2() {
                 || difference_from_prev.abs() < 1
                 || difference_from_prev.abs() > 3
             {
-                for (i, _item) in report.iter().enumerate() {
-                    variants_to_retry.push(
+                let any_variants_safe = report
+                    .iter()
+                    .enumerate()
+                    .map(|(i, _n)| {
                         report
                             .iter()
                             .enumerate()
                             .filter_map(|(j, &n)| if j != i { Some(n) } else { None })
-                            .collect(),
-                    );
+                            .collect::<Vec<_>>()
+                    })
+                    .any(|variant| {
+                        let mut report_direction: i8 = 0;
+                        for (i, item) in variant.iter().enumerate() {
+                            if i == 0 {
+                                continue;
+                            }
+                            let prev = variant[i - 1];
+                            let difference_from_prev = item - prev;
+                            let direction = sign(difference_from_prev);
+                            if report_direction == 0 {
+                                report_direction = direction;
+                            }
+                            if direction != report_direction
+                                || difference_from_prev.abs() < 1
+                                || difference_from_prev.abs() > 3
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    });
+                if any_variants_safe {
+                    num_safe_reports += 1;
                 }
+                is_main_report_safe = false;
                 break;
             }
         }
 
-        if variants_to_retry.is_empty() {
+        if is_main_report_safe {
             num_safe_reports += 1;
             continue;
-        }
-
-        let any_variants_safe = variants_to_retry
-            .iter()
-            .filter(|variant| {
-                let mut report_direction: i8 = 0;
-                for (i, item) in variant.iter().enumerate() {
-                    if i == 0 {
-                        continue;
-                    }
-                    let prev = variant[i - 1];
-                    let difference_from_prev = item - prev;
-                    let direction = sign(difference_from_prev);
-                    if report_direction == 0 {
-                        report_direction = direction;
-                    }
-                    if direction != report_direction
-                        || difference_from_prev.abs() < 1
-                        || difference_from_prev.abs() > 3
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .count();
-
-        if any_variants_safe > 0 {
-            num_safe_reports += 1;
         }
     }
 
