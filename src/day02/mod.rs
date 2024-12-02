@@ -77,20 +77,20 @@ pub fn part2() {
                 let any_variants_safe = report
                     .iter()
                     .enumerate()
-                    .map(|(i, _n)| {
+                    .map(move |(i, _n)| {
                         report
                             .iter()
                             .enumerate()
-                            .filter_map(|(j, &n)| if j != i { Some(n) } else { None })
-                            .collect::<Vec<_>>()
+                            .filter_map(move |(j, &n)| if j != i { Some(n) } else { None })
                     })
                     .any(|variant| {
                         let mut report_direction: i8 = 0;
-                        for (i, item) in variant.iter().enumerate() {
+                        let mut prev = 0;
+                        for (i, item) in variant.enumerate() {
                             if i == 0 {
+                                prev = item;
                                 continue;
                             }
-                            let prev = variant[i - 1];
                             let difference_from_prev = item - prev;
                             let direction = sign(difference_from_prev);
                             if report_direction == 0 {
@@ -102,6 +102,7 @@ pub fn part2() {
                             {
                                 return false;
                             }
+                            prev = item;
                         }
                         return true;
                     });
