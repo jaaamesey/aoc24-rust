@@ -48,15 +48,13 @@ pub fn part2() {
 
     let report_strs = input_str.lines();
 
-    let reports = report_strs
-        .map(|line| {
-            line.split_whitespace()
-                .map(|num_str| num_str.parse::<i32>().unwrap())
-        })
-        .collect::<Vec<_>>();
+    let reports = report_strs.map(|line| {
+        line.split_whitespace()
+            .map(|num_str| num_str.parse::<i32>().unwrap())
+    });
 
     let mut num_safe_reports = 0;
-    for report in reports.iter() {
+    for report in reports {
         let mut report_direction: i8 = 0;
         let mut is_main_report_safe = true;
         let mut prev = 0;
