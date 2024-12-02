@@ -52,7 +52,6 @@ pub fn part2() {
         .map(|line| {
             line.split_whitespace()
                 .map(|num_str| num_str.parse::<i32>().unwrap())
-                .collect::<Vec<_>>()
         })
         .collect::<Vec<_>>();
 
@@ -60,28 +59,30 @@ pub fn part2() {
     for report in reports.iter() {
         let mut report_direction: i8 = 0;
         let mut is_main_report_safe = true;
-        for (i, item) in report.iter().enumerate() {
+        let mut prev = 0;
+        for (i, item) in report.clone().enumerate() {
             if i == 0 {
+                prev = item;
                 continue;
             }
-            let prev = report[i - 1];
             let difference_from_prev = item - prev;
             let direction = sign(difference_from_prev);
             if report_direction == 0 {
                 report_direction = direction;
             }
+            prev = item;
             if direction != report_direction
                 || difference_from_prev.abs() < 1
                 || difference_from_prev.abs() > 3
             {
                 let any_variants_safe = report
-                    .iter()
+                    .clone()
                     .enumerate()
                     .map(move |(i, _n)| {
                         report
-                            .iter()
+                            .clone()
                             .enumerate()
-                            .filter_map(move |(j, &n)| if j != i { Some(n) } else { None })
+                            .filter_map(move |(j, n)| if j != i { Some(n) } else { None })
                     })
                     .any(|variant| {
                         let mut report_direction: i8 = 0;
