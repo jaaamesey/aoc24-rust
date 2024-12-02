@@ -88,12 +88,11 @@ pub fn part2() {
         }
 
         if variants_to_retry.is_empty() {
-            dbg!("Safe without change", report);
             num_safe_reports += 1;
             continue;
         }
 
-        let num_variants_safe = variants_to_retry
+        let any_variants_safe = variants_to_retry
             .iter()
             .filter(|variant| {
                 let mut report_direction: i8 = 0;
@@ -111,24 +110,18 @@ pub fn part2() {
                         || difference_from_prev.abs() < 1
                         || difference_from_prev.abs() > 3
                     {
-                        dbg!("BONK!!!");
                         return false;
                     }
                 }
-                dbg!("Safe with change", variant);
                 return true;
             })
             .count();
 
-        if num_variants_safe > 0 {
+        if any_variants_safe > 0 {
             num_safe_reports += 1;
         }
     }
 
-    // 655 is too low? But worked for test data
-    // 667 is too high. Got that from assuming we count all variant reports.
-    // Also, that fails test data.
-    // Removing next item in third branch seemingly does nothing.
     dbg!(num_safe_reports);
 }
 
