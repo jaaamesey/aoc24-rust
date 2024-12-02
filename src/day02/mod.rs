@@ -76,7 +76,7 @@ pub fn part2() {
                 let any_variants_safe = report
                     .clone()
                     .enumerate()
-                    .map(move |(i, _n)| {
+                    .map(|(i, _n)| {
                         report
                             .clone()
                             .enumerate()
