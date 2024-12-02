@@ -44,7 +44,7 @@ pub fn part1() {
 }
 
 pub fn part2() {
-    let input_str = include_str!("./test_input.txt");
+    let input_str = include_str!("./real_input.txt");
 
     let report_strs = input_str.lines();
 
@@ -74,20 +74,15 @@ pub fn part2() {
                 || difference_from_prev.abs() < 1
                 || difference_from_prev.abs() > 3
             {
-                variants_to_retry.push(
-                    report
-                        .iter()
-                        .enumerate()
-                        .filter_map(|(j, &n)| if j != i - 1 { Some(n) } else { None })
-                        .collect(),
-                );
-                variants_to_retry.push(
-                    report
-                        .iter()
-                        .enumerate()
-                        .filter_map(|(j, &n)| if j != i { Some(n) } else { None })
-                        .collect(),
-                );
+                for (i, _item) in report.iter().enumerate() {
+                    variants_to_retry.push(
+                        report
+                            .iter()
+                            .enumerate()
+                            .filter_map(|(j, &n)| if j != i { Some(n) } else { None })
+                            .collect(),
+                    );
+                }
                 break;
             }
         }
@@ -98,36 +93,42 @@ pub fn part2() {
             continue;
         }
 
-        let any_variants_safe = variants_to_retry.iter().any(|variant| {
-            let mut report_direction: i8 = 0;
-            for (i, item) in variant.iter().enumerate() {
-                if i == 0 {
-                    continue;
+        let num_variants_safe = variants_to_retry
+            .iter()
+            .filter(|variant| {
+                let mut report_direction: i8 = 0;
+                for (i, item) in variant.iter().enumerate() {
+                    if i == 0 {
+                        continue;
+                    }
+                    let prev = variant[i - 1];
+                    let difference_from_prev = item - prev;
+                    let direction = sign(difference_from_prev);
+                    if report_direction == 0 {
+                        report_direction = direction;
+                    }
+                    if direction != report_direction
+                        || difference_from_prev.abs() < 1
+                        || difference_from_prev.abs() > 3
+                    {
+                        dbg!("BONK!!!");
+                        return false;
+                    }
                 }
-                let prev = variant[i - 1];
-                let difference_from_prev = item - prev;
-                let direction = sign(difference_from_prev);
-                if report_direction == 0 {
-                    report_direction = direction;
-                }
-                if direction != report_direction
-                    || difference_from_prev.abs() < 1
-                    || difference_from_prev.abs() > 3
-                {
-                    dbg!("BONK!!!");
-                    return false;
-                }
-            }
-            dbg!("Safe with change", variant);
-            return true;
-        });
+                dbg!("Safe with change", variant);
+                return true;
+            })
+            .count();
 
-        if any_variants_safe {
+        if num_variants_safe > 0 {
             num_safe_reports += 1;
         }
     }
 
     // 655 is too low? But worked for test data
+    // 667 is too high. Got that from assuming we count all variant reports.
+    // Also, that fails test data.
+    // Removing next item in third branch seemingly does nothing.
     dbg!(num_safe_reports);
 }
 
