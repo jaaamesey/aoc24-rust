@@ -48,6 +48,7 @@ pub fn combined() {
         .captures_iter(input_str)
         .map(|c| {
             let (_, [a, b]) = c.extract();
+
             if a == "do" {
                 enabled = true;
                 return 0;
