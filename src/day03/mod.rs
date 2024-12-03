@@ -41,26 +41,26 @@ pub fn part2() {
 
 pub fn combined() {
     let input_str = include_str!("./real_input.txt");
-    let regex = Regex::new(r"mul\((\d+),(\d+)\)|(do)(\(\))|(don't)(\(\))").unwrap();
+    let regex = Regex::new(r"mul\(\d+,\d+\)|do\(\)|don't\(\)").unwrap();
     let mut enabled = true;
     let mut part_1_sum = 0;
     let part_2_sum = regex
         .captures_iter(input_str)
         .map(|c| {
-            let (_, [a, b]) = c.extract();
-            match a {
-                "do" => {
+            let (str, []) = c.extract();
+            match str {
+                "do()" => {
                     enabled = true;
                     return 0;
                 }
-                "don't" => {
+                "don't()" => {
                     enabled = false;
                     return 0;
                 }
                 _ => {
-                    let res = a.parse::<i32>().unwrap() * b.parse::<i32>().unwrap();
+                    let (a_str, b_str) = str[4..str.len() - 1].split_once(',').unwrap();
+                    let res = a_str.parse::<i32>().unwrap() * b_str.parse::<i32>().unwrap();
                     part_1_sum += res;
-
                     if !enabled {
                         return 0;
                     }
