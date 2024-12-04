@@ -52,10 +52,11 @@ pub fn part2() {
         .map(|row| row.iter().map(|_| 0).collect())
         .collect::<Vec<Vec<usize>>>();
     for (y, row) in board.iter().enumerate() {
-        for (x, c) in row.iter().enumerate() {
-            if *c != 'M' {
-                continue;
-            }
+        for x in row
+            .iter()
+            .enumerate()
+            .filter_map(|(i, c)| if *c == 'M' { Some(i) } else { None })
+        {
             for (dy, dx) in directions {
                 let mut diagonal_center: Option<(usize, usize)> = None;
                 for (i, target_char) in "MAS".chars().enumerate() {
