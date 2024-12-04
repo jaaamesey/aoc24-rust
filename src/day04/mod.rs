@@ -13,6 +13,12 @@ pub fn part1() {
         (1, -1),
         (1, 1),
     ];
+    let target_chars = "XMAS"
+        .chars()
+        .enumerate()
+        .map(|(i, c)| (i as isize, c))
+        .filter(|&(i, _)| i != 0)
+        .collect::<Vec<_>>();
     let mut num_instances = 0;
     for (y, row) in board.iter().enumerate() {
         for (x, c) in row.iter().enumerate() {
@@ -22,7 +28,7 @@ pub fn part1() {
             num_instances += directions
                 .iter()
                 .filter(|(dy, dx)| {
-                    "XMAS".chars().enumerate().all(|(i, target_char)| {
+                    target_chars.iter().all(|&(i, target_char)| {
                         let by = y.checked_add_signed(*dy * (i as isize));
                         let bx = x.checked_add_signed(*dx * (i as isize));
                         if by.is_none()
