@@ -56,7 +56,7 @@ pub fn part2() {
         for x in row
             .iter()
             .enumerate()
-            .filter_map(|(i, c)| if *c == 'M' { Some(i) } else { None })
+            .filter_map(|(i, &c)| if c == 'M' { Some(i) } else { None })
         {
             for (dy, dx) in directions {
                 let mut diagonal_center: Option<(usize, usize)> = None;
