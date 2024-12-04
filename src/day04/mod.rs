@@ -55,6 +55,7 @@ pub fn part2() {
         .chars()
         .enumerate()
         .map(|(i, c)| (i as isize, c))
+        .filter(|&(i, _)| i != 0)
         .collect::<Vec<_>>();
     for (y, row) in board.iter().enumerate() {
         for x in row
