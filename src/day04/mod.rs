@@ -50,8 +50,12 @@ pub fn part2() {
     let mut diagonal_centers = board
         .iter()
         .map(|row| row.iter().map(|_| 0).collect())
-        .collect::<Vec<Vec<usize>>>();
-    let target_chars = "MAS".chars().enumerate().collect::<Vec<_>>();
+        .collect::<Vec<Vec<u8>>>();
+    let target_chars = "MAS"
+        .chars()
+        .enumerate()
+        .map(|(i, c)| (i as isize, c))
+        .collect::<Vec<_>>();
     for (y, row) in board.iter().enumerate() {
         for x in row
             .iter()
@@ -61,8 +65,8 @@ pub fn part2() {
             for (dy, dx) in directions {
                 let mut diagonal_center: Option<(usize, usize)> = None;
                 for &(i, target_char) in target_chars.iter() {
-                    let by = y.checked_add_signed(dy * (i as isize));
-                    let bx = x.checked_add_signed(dx * (i as isize));
+                    let by = y.checked_add_signed(dy * i);
+                    let bx = x.checked_add_signed(dx * i);
                     if by.is_none()
                         || bx.is_none()
                         || by.unwrap() > board.len() - 1
@@ -73,7 +77,7 @@ pub fn part2() {
                         break;
                     }
                     if i == 1 {
-                        diagonal_center = Some((by.unwrap(), bx.unwrap()))
+                        diagonal_center = Some((by.unwrap(), bx.unwrap()));
                     };
                 }
                 if let Some((y, x)) = diagonal_center {
@@ -84,7 +88,7 @@ pub fn part2() {
     }
     let num_crosses = diagonal_centers
         .iter()
-        .map(|row| row.iter().filter(|&&count| count > 1).count())
+        .map(|row| row.iter().filter(|&&count| count == 2).count())
         .sum::<usize>();
     dbg!(num_crosses);
 }
