@@ -51,6 +51,7 @@ pub fn part2() {
         .iter()
         .map(|row| row.iter().map(|_| 0).collect())
         .collect::<Vec<Vec<usize>>>();
+    let target_chars = "MAS".chars().enumerate().collect::<Vec<_>>();
     for (y, row) in board.iter().enumerate() {
         for x in row
             .iter()
@@ -59,19 +60,19 @@ pub fn part2() {
         {
             for (dy, dx) in directions {
                 let mut diagonal_center: Option<(usize, usize)> = None;
-                for (i, target_char) in "MAS".chars().enumerate() {
-                    let by = y.checked_add_signed(dy * (i as isize));
-                    let bx = x.checked_add_signed(dx * (i as isize));
+                for (i, target_char) in target_chars.iter() {
+                    let by = y.checked_add_signed(dy * (*i as isize));
+                    let bx = x.checked_add_signed(dx * (*i as isize));
                     if by.is_none()
                         || bx.is_none()
                         || by.unwrap() > board.len() - 1
                         || bx.unwrap() > row.len() - 1
-                        || board[by.unwrap()][bx.unwrap()] != target_char
+                        || board[by.unwrap()][bx.unwrap()] != *target_char
                     {
                         diagonal_center = None;
                         break;
                     }
-                    if i == 1 {
+                    if *i == 1 {
                         diagonal_center = Some((by.unwrap(), bx.unwrap()))
                     };
                 }
