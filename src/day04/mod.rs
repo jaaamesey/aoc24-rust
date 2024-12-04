@@ -84,7 +84,7 @@ pub fn part2() {
     }
     let num_crosses = diagonal_centers
         .iter()
-        .map(|row| row.iter().filter(|count| **count > 1).count())
+        .map(|row| row.iter().filter(|&&count| count > 1).count())
         .sum::<usize>();
     dbg!(num_crosses);
 }
