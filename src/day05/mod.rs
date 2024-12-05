@@ -1,3 +1,10 @@
+use rayon::{
+    iter::{IntoParallelRefIterator, ParallelIterator},
+    slice::ParallelSliceMut,
+};
+
+extern crate rayon;
+
 pub fn part1() {
     let input = include_str!("./real_input.txt");
 
@@ -70,9 +77,8 @@ pub fn part2() {
         })
         .collect::<Vec<_>>();
 
-    let mut sum = 0;
-    updates
-        .iter()
+    let sum = updates
+        .par_iter()
         .filter(|update| {
             let is_valid = update.iter().enumerate().all(|(index_in_update, page)| {
                 let mut numbers_that_must_come_after =
@@ -90,9 +96,9 @@ pub fn part2() {
             });
             return !is_valid;
         })
-        .for_each(|update| {
+        .map(|update| {
             let mut update_cpy = update.clone();
-            update_cpy.sort_by(|a, b| {
+            update_cpy.par_sort_by(|a, b| {
                 let mut numbers_that_must_come_after =
                     rules.iter().filter_map(|(before, after)| {
                         if &before == &a && update.iter().any(|n| n == after) {
@@ -106,7 +112,8 @@ pub fn part2() {
                 }
                 return std::cmp::Ordering::Equal;
             });
-            sum += update_cpy[update_cpy.len() / 2];
-        });
+            update_cpy[update_cpy.len() / 2]
+        })
+        .sum::<u32>();
     dbg!(sum);
 }
