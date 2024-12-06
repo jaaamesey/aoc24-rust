@@ -101,8 +101,11 @@ pub fn part2() {
 
         possible_new_obstacle_locations.insert((y, x));
 
-        if let Some(row) = board.get(y.checked_add_signed(dy).unwrap_or(board_height)) {
-            if let Some(&c) = row.get(x.checked_add_signed(dx).unwrap_or(board_width)) {
+        let new_y = y.checked_add_signed(dy).unwrap_or(board_height);
+        let new_x = x.checked_add_signed(dx).unwrap_or(board_width);
+
+        if let Some(row) = board.get(new_y) {
+            if let Some(&c) = row.get(new_x) {
                 if c == '#' {
                     dir_index = (dir_index + 1) % directions.len();
                     continue;
@@ -110,8 +113,6 @@ pub fn part2() {
             }
         }
 
-        let new_y = y.checked_add_signed(dy).unwrap_or(board_height);
-        let new_x = x.checked_add_signed(dx).unwrap_or(board_width);
         if new_y > board_height - 1 || new_x > board_width - 1 {
             break;
         }
