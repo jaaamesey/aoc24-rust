@@ -1,4 +1,6 @@
+extern crate rayon;
 use hashbrown::HashSet;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
 pub fn part1() {
     let (board, starting_pos) = {
@@ -119,6 +121,7 @@ pub fn part2() {
 
     let count = possible_new_obstacle_locations
         .iter()
+        .par_bridge()
         .filter(|(new_obstacle_y, new_obstacle_x)| {
             let mut dir_index = 0;
             let mut pos = starting_pos;
