@@ -116,4 +116,44 @@ pub fn part2() {
 
         pos = (new_y, new_x);
     }
+
+    let count = possible_new_obstacle_locations
+        .iter()
+        .filter(|(new_obstacle_y, new_obstacle_x)| {
+            let mut dir_index = 0;
+            let mut pos = starting_pos;
+            let mut visited_positions_and_dir_indexes: HashSet<((usize, usize), usize)> =
+                HashSet::new();
+            loop {
+                let (y, x) = pos;
+                let (dy, dx) = directions[dir_index];
+
+                visited_positions_and_dir_indexes.insert(((y, x), dir_index));
+
+                let new_y = y.checked_add_signed(dy).unwrap_or(board_height);
+                let new_x = x.checked_add_signed(dx).unwrap_or(board_width);
+
+                if let Some(row) = board.get(new_y) {
+                    if let Some(&c) = row.get(new_x) {
+                        if c == '#' || (new_y == *new_obstacle_y && new_x == *new_obstacle_x) {
+                            dir_index = (dir_index + 1) % directions.len();
+                            continue;
+                        }
+                    }
+                }
+
+                if visited_positions_and_dir_indexes.contains(&((new_y, new_x), dir_index)) {
+                    return true;
+                }
+
+                if new_y > board_height - 1 || new_x > board_width - 1 {
+                    return false;
+                }
+
+                pos = (new_y, new_x);
+            }
+        })
+        .count();
+
+    dbg!(count);
 }
