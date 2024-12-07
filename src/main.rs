@@ -1,8 +1,7 @@
-mod day06;
+mod day07;
 
 fn main() {
     let start = std::time::Instant::now();
-    //day06::part1();
-    day06::part2();
+    day07::part1();
     println!("Finished in {:?}", start.elapsed());
 }
