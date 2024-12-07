@@ -101,15 +101,25 @@ pub fn part2() {
             };
             let mut current_permutation: u64 = 0;
             loop {
-                let permutation_str = {
-                    let unpadded_str = format!("{}", radix(current_permutation, 3));
-                    &format!("{:0>len$}", unpadded_str, len = max_permutation_str.len())
+                let permutation = {
+                    let mut vec = vec![0; max_permutation_str.len()];
+                    let mut i = vec.len() - 1;
+                    let mut n = current_permutation;
+                    loop {
+                        if i == 0 {
+                            break;
+                        }
+                        vec[i] = n % 3;
+                        n /= 3;
+                        i -= 1;
+                    }
+                    vec
                 };
                 let mut operators = {
-                    permutation_str.chars().enumerate().map(|(i, c)| {
-                        if c == '0' || i == 0 {
+                    permutation.iter().enumerate().map(|(i, c)| {
+                        if *c == 0 || i == 0 {
                             Operator::ADD
-                        } else if c == '1' {
+                        } else if *c == 1 {
                             Operator::MULTIPLY
                         } else {
                             Operator::CONCATENATE
