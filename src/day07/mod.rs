@@ -1,8 +1,4 @@
 pub fn part1() {
-    // 1111 = 15
-    // 4^2 - 1?
-    // 111 = 7
-    // 3^2 - 1? No
     #[derive(Debug)]
     enum Operator {
         ADD,
@@ -56,6 +52,9 @@ pub fn part1() {
 
                 if result == test {
                     return Some(test);
+                }
+                if result > test {
+                    return None;
                 }
 
                 current_permutation += 1;
