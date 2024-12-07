@@ -1,3 +1,5 @@
+use radix_fmt::radix;
+
 pub fn part1() {
     #[derive(Debug)]
     enum Operator {
@@ -68,4 +70,76 @@ pub fn part1() {
     dbg!(res);
 }
 
-pub fn part2() {}
+pub fn part2() {
+    #[derive(Debug)]
+    enum Operator {
+        ADD,
+        MULTIPLY,
+        CONCATENATE,
+    }
+
+    let lines = include_str!("./real_input.txt").lines().map(|l| {
+        let (test_str, numbers_str) = l.split_once(": ").unwrap();
+        let test = test_str.parse::<u64>().unwrap();
+        let numbers = numbers_str
+            .split(' ')
+            .map(|n| n.parse::<u64>().unwrap())
+            .collect::<Vec<_>>();
+        (test, numbers)
+    });
+    let res = lines
+        .filter_map(|(test, numbers)| {
+            let (max_permutation, max_permutation_str) = {
+                let mut str = String::new();
+                for _ in 0..numbers.len() {
+                    str.push('2');
+                }
+                (u64::from_str_radix(&str, 3).unwrap(), str)
+            };
+            let mut current_permutation: u64 = 0;
+            loop {
+                let permutation_str = {
+                    let unpadded_str = format!("{}", radix(current_permutation, 3));
+                    &format!("{:0>len$}", unpadded_str, len = max_permutation_str.len())
+                };
+                let mut operators = {
+                    permutation_str.chars().enumerate().map(|(i, c)| {
+                        if c == '0' || i == 0 {
+                            Operator::ADD
+                        } else if c == '1' {
+                            Operator::MULTIPLY
+                        } else {
+                            Operator::CONCATENATE
+                        }
+                    })
+                };
+
+                let mut result = 0;
+                // TODO: subtract by 1
+                for n in numbers.iter() {
+                    let operator = operators.next().unwrap();
+                    match operator {
+                        Operator::ADD => result += n,
+                        Operator::MULTIPLY => result *= n,
+                        Operator::CONCATENATE => {
+                            result = (result.to_string() + &n.to_string())
+                                .parse::<u64>()
+                                .unwrap();
+                        }
+                    }
+                }
+
+                if result == test {
+                    return Some(test);
+                }
+
+                current_permutation += 1;
+
+                if current_permutation > max_permutation {
+                    return None;
+                }
+            }
+        })
+        .sum::<u64>();
+    dbg!(res);
+}
