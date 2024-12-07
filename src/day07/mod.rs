@@ -129,13 +129,15 @@ pub fn part2() {
                                 .parse::<u64>()
                                 .unwrap();
                         }
+                    };
+                    if result > test {
+                        break;
                     }
                 }
 
                 if result == test {
                     return Some(test);
                 }
-
                 current_permutation += 1;
 
                 if current_permutation > max_permutation {
