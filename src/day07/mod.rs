@@ -1,4 +1,6 @@
 use radix_fmt::radix;
+use rayon::iter::ParallelBridge;
+use rayon::iter::ParallelIterator;
 
 pub fn part1() {
     #[derive(Debug)]
@@ -88,6 +90,7 @@ pub fn part2() {
         (test, numbers)
     });
     let res = lines
+        .par_bridge()
         .filter_map(|(test, numbers)| {
             let (max_permutation, max_permutation_str) = {
                 let mut str = String::new();
