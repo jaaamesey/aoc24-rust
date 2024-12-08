@@ -19,7 +19,9 @@ pub fn part1() {
     let grid_height = isize::try_from(lines.clone().count()).unwrap();
     let grid_width = isize::try_from(lines.clone().next().unwrap().chars().count()).unwrap();
 
-    let mut antinodes: HashSet<(isize, isize)> = HashSet::new();
+    //let mut antinodes: HashSet<(isize, isize)> = HashSet::new();
+
+    let mut antinode_bit_map: [u64; 50] = [0; 50];
 
     for frequency_positions in positions_by_frequency.values() {
         for position in frequency_positions {
@@ -37,28 +39,37 @@ pub fn part1() {
                         && antinode_x >= 0
                         && antinode_x < grid_width
                     {
-                        antinodes.insert((antinode_y, antinode_x));
+                        antinode_bit_map[usize::try_from(antinode_y).unwrap()] |= 1 << antinode_x;
+                        //antinodes.insert((antinode_y, antinode_x));
                     }
                 }
             }
         }
     }
-
-    dbg!(antinodes.len());
-
-    for (y, line) in lines.enumerate() {
-        println!(
-            "{}",
-            line.chars()
-                .enumerate()
-                .map(|(x, _)| if antinodes.contains(&(y as isize, x as isize)) {
-                    '#'
-                } else {
-                    '.'
-                })
-                .collect::<String>()
-        );
+    let mut part1answer = 0;
+    for i in 0..50 {
+        for j in 0..50 {
+            if (1 << j & antinode_bit_map[i]) != 0 {
+                part1answer += 1
+            }
+        }
     }
+    dbg!(part1answer);
+    // dbg!(antinodes.len());
+
+    // for (y, line) in lines.enumerate() {
+    //     println!(
+    //         "{}",
+    //         line.chars()
+    //             .enumerate()
+    //             .map(|(x, _)| if antinodes.contains(&(y as isize, x as isize)) {
+    //                 '#'
+    //             } else {
+    //                 '.'
+    //             })
+    //             .collect::<String>()
+    //     );
+    // }
 }
 
 pub fn part2() {
@@ -80,7 +91,8 @@ pub fn part2() {
     let grid_height = i8::try_from(lines.clone().count()).unwrap();
     let grid_width = i8::try_from(lines.clone().next().unwrap().chars().count()).unwrap();
 
-    let mut antinodes: HashSet<(i8, i8)> = HashSet::new();
+    // let mut antinodes: HashSet<(i8, i8)> = HashSet::new();
+    let mut antinode_bit_map: [u64; 50] = [0; 50];
 
     for frequency_positions in positions_by_frequency.values() {
         for position in frequency_positions {
@@ -99,7 +111,8 @@ pub fn part2() {
                         && antinode_x >= 0
                         && antinode_x < grid_width
                     {
-                        antinodes.insert((antinode_y, antinode_x));
+                        antinode_bit_map[usize::try_from(antinode_y).unwrap()] |= 1 << antinode_x;
+                        // antinodes.insert((antinode_y, antinode_x));
                     } else {
                         break;
                     }
@@ -109,5 +122,14 @@ pub fn part2() {
         }
     }
 
-    dbg!(antinodes.len());
+    let mut part2answer = 0;
+    for i in 0..50 {
+        for j in 0..64 {
+            if (1 << j & antinode_bit_map[i]) != 0 {
+                part2answer += 1
+            }
+        }
+    }
+    dbg!(part2answer);
+    // dbg!(antinodes.len());
 }
