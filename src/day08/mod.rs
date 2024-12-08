@@ -64,7 +64,7 @@ pub fn part1() {
 pub fn part2() {
     let lines = include_str!("./real_input.txt").lines();
 
-    let mut positions_by_frequency: HashMap<char, Vec<(isize, isize)>> = HashMap::new();
+    let mut positions_by_frequency: HashMap<char, Vec<(i16, i16)>> = HashMap::new();
 
     for (y, line) in lines.clone().enumerate() {
         for (x, c) in line.chars().enumerate() {
@@ -72,15 +72,15 @@ pub fn part2() {
                 positions_by_frequency
                     .entry(c)
                     .or_insert_with(Vec::new)
-                    .push((isize::try_from(y).unwrap(), isize::try_from(x).unwrap()))
+                    .push((i16::try_from(y).unwrap(), i16::try_from(x).unwrap()))
             }
         }
     }
 
-    let grid_height = isize::try_from(lines.clone().count()).unwrap();
-    let grid_width = isize::try_from(lines.clone().next().unwrap().chars().count()).unwrap();
+    let grid_height = i16::try_from(lines.clone().count()).unwrap();
+    let grid_width = i16::try_from(lines.clone().next().unwrap().chars().count()).unwrap();
 
-    let mut antinodes: HashSet<(isize, isize)> = HashSet::new();
+    let mut antinodes: HashSet<(i16, i16)> = HashSet::new();
 
     for frequency_positions in positions_by_frequency.values() {
         for position in frequency_positions {
