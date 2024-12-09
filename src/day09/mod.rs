@@ -5,14 +5,14 @@ pub fn part1() {
         .lines()
         .map(|line| {
             let fragmented = {
-                let mut vec = Vec::<String>::new();
+                let mut vec = Vec::<Option<usize>>::new();
                 for (i, c) in line.chars().enumerate() {
                     let is_free_space = i % 2 != 0;
                     for _ in 0..c.to_string().parse::<u8>().unwrap() {
                         if is_free_space {
-                            vec.push(".".to_string());
+                            vec.push(None);
                         } else {
-                            vec.push((i / 2).to_string());
+                            vec.push(Some(i / 2));
                         }
                     }
                 }
@@ -22,11 +22,11 @@ pub fn part1() {
             let mut defragmented = fragmented.clone();
 
             for i in 0..defragmented.len() {
-                if defragmented[i] == "." {
+                if defragmented[i].is_none() {
                     for j in (i..defragmented.len()).rev() {
-                        if defragmented[j] != "." {
-                            defragmented[i] = defragmented[j].clone();
-                            defragmented[j] = ".".to_string();
+                        if defragmented[j].is_some() {
+                            defragmented[i] = defragmented[j];
+                            defragmented[j] = None;
                             break;
                         }
                     }
@@ -36,7 +36,7 @@ pub fn part1() {
             defragmented
                 .iter()
                 .enumerate()
-                .map(|(i, c)| i * c.to_string().parse::<usize>().unwrap_or(0))
+                .map(|(i, c)| i * c.unwrap_or(0))
                 .sum::<usize>()
         })
         .sum::<usize>();
