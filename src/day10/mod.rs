@@ -21,7 +21,6 @@ pub fn part1() {
             }
             let mut nines_found = HashSet::<(usize, usize)>::new();
             find_nines(&grid, &directions, (y, x), &mut nines_found);
-            dbg!(nines_found.len());
             sum += nines_found.len();
         }
     }
