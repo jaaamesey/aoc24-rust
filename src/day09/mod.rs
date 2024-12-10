@@ -51,9 +51,10 @@ pub fn part2() {
     let res = input
         .lines()
         .map(|line| {
-            let (fragmented, sizes) = {
+            let (fragmented, sizes, starting_positions) = {
                 let mut vec = Vec::<Option<usize>>::new();
                 let mut sizes = HashMap::<usize, u8>::new();
+                let mut starting_positions = HashMap::<usize, usize>::new();
                 for (i, c) in line.chars().enumerate() {
                     let is_free_space = i % 2 != 0;
                     let size = c.to_string().parse::<u8>().unwrap();
@@ -66,7 +67,14 @@ pub fn part2() {
                         }
                     }
                 }
-                (vec, sizes)
+                for i in 0..vec.len() {
+                    if let Some(file_id) = vec[i] {
+                        if !starting_positions.contains_key(&file_id) {
+                            starting_positions.insert(file_id, i);
+                        }
+                    }
+                }
+                (vec, sizes, starting_positions)
             };
 
             let mut defragmented = fragmented.clone();
@@ -91,7 +99,9 @@ pub fn part2() {
                         let available_space = i - curr_blank_start.unwrap() + 1;
                         if file_size <= available_space {
                             // Remove file
-                            for i in 0..defragmented.len() {
+                            let remove_start_pos = *starting_positions.get(*file_id).unwrap();
+                            let remove_end_pos = remove_start_pos + file_size;
+                            for i in remove_start_pos..remove_end_pos {
                                 if defragmented[i] == Some(**file_id) {
                                     defragmented[i] = None;
                                 }
