@@ -16,9 +16,6 @@ pub fn do_the_thing(iterations: usize) {
                 *stones.entry(1).or_insert(0) += stone_quantity;
             } else if digits.len() % 2 == 0 {
                 let (left_str, right_str) = digits.split_at(digits.len() / 2);
-                if left_str.len() != right_str.len() {
-                    panic!();
-                }
                 let left = left_str.parse::<usize>().unwrap();
                 let right = right_str.parse::<usize>().unwrap();
 
