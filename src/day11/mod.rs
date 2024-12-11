@@ -9,27 +9,25 @@ pub fn do_the_thing(iterations: usize) {
 
     for _ in 0..iterations {
         let prev_stones = stones.clone();
-        prev_stones
-            .iter()
-            .for_each(|(stone_label, stone_quantity)| {
-                let digits = stone_label.to_string();
-                *stones.entry(*stone_label).or_insert(0) -= stone_quantity;
-                if *stone_label == 0 {
-                    *stones.entry(1).or_insert(0) += stone_quantity;
-                } else if digits.len() % 2 == 0 {
-                    let (left_str, right_str) = digits.split_at(digits.len() / 2);
-                    if left_str.len() != right_str.len() {
-                        panic!();
-                    }
-                    let left = left_str.parse::<usize>().unwrap();
-                    let right = right_str.parse::<usize>().unwrap();
-
-                    *stones.entry(left).or_insert(0) += stone_quantity;
-                    *stones.entry(right).or_insert(0) += stone_quantity;
-                } else {
-                    *stones.entry(stone_label * 2024).or_insert(0) += stone_quantity;
+        for (stone_label, stone_quantity) in prev_stones {
+            let digits = stone_label.to_string();
+            *stones.entry(stone_label).or_insert(0) -= stone_quantity;
+            if stone_label == 0 {
+                *stones.entry(1).or_insert(0) += stone_quantity;
+            } else if digits.len() % 2 == 0 {
+                let (left_str, right_str) = digits.split_at(digits.len() / 2);
+                if left_str.len() != right_str.len() {
+                    panic!();
                 }
-            });
+                let left = left_str.parse::<usize>().unwrap();
+                let right = right_str.parse::<usize>().unwrap();
+
+                *stones.entry(left).or_insert(0) += stone_quantity;
+                *stones.entry(right).or_insert(0) += stone_quantity;
+            } else {
+                *stones.entry(stone_label * 2024).or_insert(0) += stone_quantity;
+            }
+        }
     }
 
     dbg!(stones.values().sum::<usize>());
