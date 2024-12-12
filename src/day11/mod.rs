@@ -8,7 +8,7 @@ pub fn do_the_thing(iterations: usize) {
         .for_each(|stone| *stones.entry(stone).or_insert(0) += 1);
 
     for _ in 0..iterations {
-        let mut new_stones: HashMap<usize, usize> = HashMap::new();
+        let mut new_stones: HashMap<usize, usize> = HashMap::with_capacity(stones.len() + 50);
         for (&stone_label, &stone_quantity) in stones.iter() {
             let digits = stone_label.to_string();
             if stone_label == 0 {
