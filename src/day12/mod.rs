@@ -87,7 +87,6 @@ pub fn part1() {
                     }
                 }
             }
-            dbg!((area, perimeter, area * perimeter));
             return area * perimeter;
         })
         .sum::<usize>();
