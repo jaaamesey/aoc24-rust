@@ -1,11 +1,10 @@
 use hashbrown::HashMap;
 
-struct Block {
-    id: usize,
-    is_static: bool,
-}
-
 pub fn part1() {
+    struct Block {
+        id: usize,
+        is_static: bool,
+    }
     let (blocks, mut block_positions, mut pos, commands) = {
         let mut blocks = Vec::<Block>::new();
         let mut block_positions = HashMap::<(i32, i32), usize>::new();
