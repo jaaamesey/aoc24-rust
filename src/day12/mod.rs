@@ -95,7 +95,7 @@ pub fn part1() {
 }
 
 pub fn part2() {
-    let grid = include_str!("./test_input.txt")
+    let grid = include_str!("./real_input.txt")
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -201,7 +201,7 @@ pub fn part2() {
                                 let x = ox.checked_add_signed(*dx).unwrap_or(grid[0].len());
                                 if y >= grid.len() || x >= grid[0].len() {
                                     return true;
-                                } else if grid[y][x] != target_type {
+                                } else if !r.contains(&(y, x)) {
                                     return true;
                                 }
                                 return false;
@@ -211,18 +211,28 @@ pub fn part2() {
                         .count()
                 })
                 .sum::<usize>();
-            let num_interior_corners = perimeter
+
+            let mut coords = Vec::new();
+            for y in 0..grid.len() + 2 {
+                for x in 0..grid[0].len() + 2 {
+                    let y = (y as isize) - 1;
+                    let x = (x as isize) - 1;
+                    if !r.contains(&(y as usize, x as usize)) {
+                        coords.push((y, x))
+                    }
+                }
+            }
+
+            let num_interior_corners = coords
                 .iter()
                 .map(|(oy, ox)| {
                     corner_checks
                         .iter()
                         .filter(|corner_check| {
                             corner_check.iter().all(|(dy, dx)| {
-                                let y = oy.checked_add_signed(*dy).unwrap_or(grid.len());
-                                let x = ox.checked_add_signed(*dx).unwrap_or(grid[0].len());
-                                if y >= grid.len() || x >= grid[0].len() {
-                                    return false;
-                                } else if grid[y][x] != target_type {
+                                let y = oy + (*dy);
+                                let x = ox + (*dx);
+                                if !r.contains(&(y as usize, x as usize)) {
                                     return false;
                                 }
                                 return true;
