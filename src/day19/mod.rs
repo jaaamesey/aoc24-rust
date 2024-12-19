@@ -1,7 +1,9 @@
+use core::panic;
+
 use hashbrown::HashSet;
 
 pub fn part1() {
-    let mut lines = include_str!("./test_input.txt").lines();
+    let mut lines = include_str!("./real_input.txt").lines();
     let allowed_substrings = {
         let mut set = HashSet::new();
         lines.next().unwrap().split(", ").for_each(|curr| {
@@ -11,39 +13,33 @@ pub fn part1() {
     };
     lines.next();
 
-    lines.for_each(|line| {
-        let mut char_iter = line.chars();
-        let mut get_next_char = || char_iter.next();
-        dbg!(try_filling_string(
-            &allowed_substrings,
-            &mut get_next_char,
-            ""
-        ));
-    });
+    let count = lines
+        .enumerate()
+        .map(|(i, line)| {
+            dbg!(i);
+            try_filling_string(&allowed_substrings, &line.chars().collect::<Vec<_>>(), 0)
+        })
+        .filter(|r| *r)
+        .count();
+
+    dbg!(count);
 
     fn try_filling_string(
         allowed_substrings: &HashSet<&str>,
-        get_next_char: &mut dyn FnMut() -> Option<char>,
-        current_substring: &str,
+        line: &Vec<char>,
+        mut i: usize,
     ) -> bool {
-        let next_char = get_next_char();
-        let can_fill_substr = allowed_substrings.contains(current_substring);
-        if let Some(next_char) = next_char {
-            let mut new_substring = current_substring.to_string();
-            new_substring.push(next_char);
-            if can_fill_substr {
-                let works_with_this_fill =
-                    try_filling_string(allowed_substrings, get_next_char, "");
-                if works_with_this_fill {
+        let mut substr = line[i].to_string();
+        while i < line.len() - 1 {
+            if allowed_substrings.contains(substr.as_str()) {
+                if try_filling_string(allowed_substrings, line, i + 1) {
                     return true;
                 }
             }
-            let works_without_this_fill =
-                try_filling_string(allowed_substrings, get_next_char, &new_substring);
-            return works_without_this_fill;
-        } else {
-            return can_fill_substr;
+            i += 1;
+            substr.push(line[i]);
         }
+        return allowed_substrings.contains(substr.as_str());
     }
 }
 
